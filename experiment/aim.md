@@ -1,1 +1,1 @@
-### Aim of the experiment
+The main purpose of this experiment is toformallyintroduce the student tocompound propositions obtained from atomic propositions using logical connectives, andstudy the inferences obtained from them. In particular, this experiment is proposed tofamiliarize student with the formal notions of axioms and derivations. We shall also intendto introduce derived connectives and inference rules such as <i>Modus Ponens</i>. We hope to also introduce the notion oflogical equivalence through this experiment

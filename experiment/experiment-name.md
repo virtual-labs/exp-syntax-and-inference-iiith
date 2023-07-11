@@ -1,1 +1,1 @@
-## Experiment name
+## Propositional Logic - Inference
