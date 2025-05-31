@@ -1,1 +1,1 @@
-## Propositional Logic - Inference
+## Propositional Logic: Syntax and Inference 

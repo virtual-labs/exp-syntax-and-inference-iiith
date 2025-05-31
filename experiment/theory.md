@@ -9,11 +9,11 @@ Boolean connectives such as <b>&#172;</b>, <b>&#8743;</b>, <b>&#8744;</b>, <b>&#
 The process of composing can be repeated any finite number of times to produce a formula. This leads to the inductive definition given [below](#compound-formulas).
 It should be noted that this definition is initially interpreted quite strictly. For example, the last two connectors <b>&#8658;</b>, and <b>&#8660;</b> are initially not considered at all. Ultimately, this is not a problem, since we consider them to be shorthand notation for formulas that exclusively use the other connectors, as we will see later.
 
-# Propositional variables
+## Propositional variables
 
 An atomic proposition is represented by a propositional variable. For propositional variables we use capital letters like A, B, C, ..., using subscripts where appropriate (e.g. A_<sub>1</sub>, A<sub>2</sub>, A<sub>3</sub>, ...). We denote the set of all propositional variables by <b>AV</b>. We assume them to be (countably) infinite.
 
-# Compound Formulas
+## Compound Formulas
 
 Formulas can be composed by using the one-place negation connector <b>&#172;</b>, or by the two-place conjunction connector <b>&#8743;</b>, or by the two-place disjunction connector <b>&#8744;</b>.
 
@@ -32,7 +32,7 @@ We describe whether we want to interpret a propositional variable X as true or f
 interpretation -->
 
 
-# Equivalence of formulas
+## Equivalence of formulas
 
 Formulas can be syntactically different, but behave in the same way. Two formulas φ and ψ are equivalent if they take on the same value under every permutation of truth values. If φ and ψ are equivalent, we note this with φ ≡ ψ.
 
@@ -42,7 +42,7 @@ Example:
      A ∧ B ≡ A ∧ (A ∧ B)
      A ∧ B ≡ ¬(¬A ∨ ¬B)
 
-# Rules of Inference
+## Rules of Inference
 There are 9 inference rules in classical propositional logic. These are part of a larger set of rules known as <i>Copi's rules</i>.
 
 
