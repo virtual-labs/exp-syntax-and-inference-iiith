@@ -1,164 +1,1076 @@
 <!DOCTYPE html>
-<html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css">
-    <link rel="stylesheet" href="./css/main.css">
-
-    <title>
-        Propositional Logic - Inference
-    </title>
+    <title>Propositional Logic Proof Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.1.0/math.min.js"></script>
+    <script src="mobile-detection.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .formula-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        .selected-item {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        .goal-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+    <style>
+        .floating-panel {
+            position: fixed;
+            top: 4rem;
+            right: 1rem;
+            width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            transform: translateX(120%);
+            z-index: 100;
+        }
+        .floating-panel.active {
+            transform: translateX(0);
+        }
+        .panel-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .feedback {
+            transition: all 0.3s ease;
+        }
+        .rule-preview {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .formula-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        .selected-item {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        .goal-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
 
-<body>
-
-    <div class="container">
-        <div class="columns is-centered">
-            <div class="column is-one-quarter v-instruction-title">
-                Tasks
-            </div>
-            <div class="column">
-                <div class="v-tabs">
-                    <ul>
-
-                        <li class="is-active" id="Task1">
-                            <a>
-                                Task 1
-                            </a>
-                        </li>
-
-                        <li id="Task2" onclick="window.location.href = 'index-2.html';">
-                            <a>
-                                Task 2
-                            </a>
-                        </li>
-
-                        <li id="Task3" onclick="window.location.href = 'index-3.html';">
-                            <a>
-                                Task 3
-                            </a>
-                        </li>
-
-                    </ul>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Left column: Goal and Controls -->
+            <div class="lg:col-span-1 card bg-white rounded-xl shadow-md p-6">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-3">Goal</h2>
+                    <div id="goalFormula" class="p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] flex flex-col justify-center"></div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="columns is-centered">
-            <div class="column">
-                <div class="v-collapsible-instruction-container v-instruction-container">
-                    <div class="v-collapsible is-size-5">Instructions </div>
-                    <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
-                        <ul style="list-style: disc;">
 
-                            <b>Procedure:</b>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button id="newProblemBtn" class="btn py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
+                        New Problem
+                    </button>
+                    <button id="validateBtn" class="btn py-2 px-4 bg-green-500 hover:bg-green-600 text-white rounded-lg transition">
+                        Validate
+                    </button>
+                    <button id="hintBtn" class="btn py-2 px-4 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition">
+                        Show Hint
+                    </button>
+                    <button id="resetBtn" class="btn py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
+                        Reset
+                    </button>
+                </div>
 
-                            <li>
-                                Pick the correct truth value for each cell and press Verify.
-                            </li>
-
-                            <li>
-                                The correctness of the entered answer is displayed in <b>Observations</b>.
-                            </li>
-
-                            <li>
-                                If the all answers are correct, click <b>Next</b> to try a
-                                different question.
-                            </li>
-
-
-                        </ul>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-3">Selected Items</h2>
+                    <div class="space-y-3">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Statements</h3>
+                            <div id="selectedStatementsDisplay" class="min-h-[2rem] p-2 bg-white border border-gray-300 rounded text-sm"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Rule</h3>
+                            <div id="selectedRuleDisplay" class="min-h-[2rem] p-2 bg-white border border-gray-300 rounded text-sm"></div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="flex gap-3">
+                    <button id="applyRuleBtn" class="btn flex-1 py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition">
+                        Apply Rule
+                    </button>
+                    <button id="clearBtn" class="btn py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right column: Derivation Sequence -->
+            <div class="lg:col-span-3 card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Derivation Sequence</h2>
+                    <span class="text-sm text-gray-500">Click to select statements</span>
+                </div>
+                
+                <div id="derivationSequence" class="space-y-3"></div>
+                
+                <div id="feedback" class="mt-4 p-4 rounded-lg hidden"></div>
             </div>
         </div>
     </div>
-    <br>
+
+    <!-- Floating Action Buttons -->
+    <div class="floating-button primary" id="rulesButton">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c0 .621-.504 1.125-1.125 1.125H18a2.25 2.25 0 0 0 2.25-2.25M6 7.5h3v3H6v-3Z" />
+        </svg>
+    </div>
     
-    <div class="columns is-centered">
-        <div class="column is-11-desktop is-12-tablet is-12-mobile">
-            <div class="v-datalist-container components-list">
-                <p>
-                    Fill the correct truth values.
-                </p>
+    <div class="floating-button secondary" id="infoButton">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg>
+    </div>
+
+    <!-- Rules Panel -->
+    <div id="rulesPanel" class="floating-panel">
+        <div class="floating-panel-header">
+            <h3 class="panel-title">Inference Rules</h3>
+            <div class="floating-panel-close" id="rulesPanelClose">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </div>
+        </div>
+        <div class="floating-panel-content">
+            <div id="inferenceRules" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div id="infoPanel" class="floating-panel">
+        <div class="floating-panel-header">
+            <h3 class="panel-title">Instructions</h3>
+            <div class="floating-panel-close" id="infoPanelClose">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </div>
+        </div>
+        <div class="floating-panel-content space-y-4">
+            <div class="bg-orange-50 p-3 rounded-lg">
+                <h3 class="font-semibold text-sm text-orange-800 mb-2">How to Use</h3>
+                <div class="text-xs space-y-1 text-gray-600">
+                    <p>• Select one or more statements from the derivation sequence</p>
+                    <p>• Select an inference rule from the rules panel</p>
+                    <p>• Click "Apply Rule" to derive a new statement</p>
+                    <p>• Continue until you derive the goal formula</p>
+                    <p>• Use "Validate" to check your proof</p>
+                    <p class="text-orange-700 font-medium mt-2">• Note: <span class="font-semibold">A operation B</span> and <span class="font-semibold">B operation A</span> are not always the same. The order in which you select statements matters for some rules.</p>
+                </div>
+            </div>
+            <div class="bg-indigo-50 p-3 rounded-lg">
+                <h3 class="font-semibold text-sm text-indigo-800 mb-2">Logical Symbols</h3>
+                <div class="text-xs space-y-1 text-gray-600">
+                    <p>• <strong>¬</strong> Negation (NOT)</p>
+                    <p>• <strong>∧</strong> Conjunction (AND)</p>
+                    <p>• <strong>∨</strong> Disjunction (OR)</p>
+                    <p>• <strong>→</strong> Implication (IF...THEN)</p>
+                    <p>• <strong>↔</strong> Equivalence (IF AND ONLY IF)</p>
+                    <p>• <strong>⊥</strong> Contradiction (FALSE)</p>
+                </div>
+            </div>
+            <div class="bg-green-50 p-3 rounded-lg">
+                <h3 class="font-semibold text-sm text-green-800 mb-2">Tips</h3>
+                <div class="text-xs space-y-1 text-gray-600">
+                    <p>• Use "New Problem" to get a different challenge</p>
+                    <p>• Use "Hint" if you're stuck</p>
+                    <p>• Use "Reset" to start over with current premises</p>
+                    <p>• Problems are color-coded by difficulty</p>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Propositional Logic Proof Assistant
+        class PropositionalLogic {
+            constructor() {
+                // Removed this.axioms
+                this.inferenceRules = [];
+                this.derivationSequence = [];
+                this.goalFormula = '';
+                this.currentProblem = null;
+                this.selectedStatements = new Set();
+                this.selectedRule = null;
+                this.problemDatabase = [];
+                // Removed this.initializeAxiomSystem();
+                this.initializeInferenceRules();
+                this.initializeProblemDatabase();
+                this.setupEventListeners();
+                this.newProblem();
+            }
+            
+            initializeInferenceRules() {
+                this.inferenceRules = [
+                    {
+                        id: 'MP',
+                        name: 'Modus Ponens',
+                        pattern: ['X', 'X → Y'],
+                        conclusion: 'Y',
+                        description: 'From X and X implies Y, derive Y',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 2) return false;
+                            
+                            // Check if we have X and X→Y in either order
+                            const impIndex = premises.findIndex(p => p.includes('→'));
+                            if (impIndex === -1) return false;
+                            
+                            const implication = premises[impIndex];
+                            const other = premises[1 - impIndex];
+                            
+                            // Split the implication
+                            const [antecedent, consequent] = implication.split(' → ');
+                            
+                            // Check if the other premise matches the antecedent
+                            if (other === antecedent) {
+                                return consequent === conclusion;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    {
+                        id: 'MT',
+                        name: 'Modus Tollens',
+                        pattern: ['¬Y', 'X → Y'],
+                        conclusion: '¬X',
+                        description: 'From not Y and X implies Y, derive not X',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 2) return false;
+                            
+                            const impIndex = premises.findIndex(p => p.includes('→'));
+                            if (impIndex === -1) return false;
+                            
+                            const implication = premises[impIndex];
+                            const other = premises[1 - impIndex];
+                            
+                            const [antecedent, consequent] = implication.split(' → ');
+                            
+                            // Check if the other premise is the negation of the consequent
+                            if (other === `¬${consequent}`) {
+                                return conclusion === `¬${antecedent}`;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    {
+                        id: 'HS',
+                        name: 'Hypothetical Syllogism',
+                        pattern: ['X → Y', 'Y → Z'],
+                        conclusion: 'X → Z',
+                        description: 'From X implies Y and Y implies Z, derive X implies Z',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 2) return false;
+                            
+                            const [first, second] = premises;
+                            
+                            if (!first.includes('→') || !second.includes('→')) return false;
+                            
+                            const [x, y1] = first.split(' → ');
+                            const [y2, z] = second.split(' → ');
+                            
+                            if (y1 === y2) {
+                                return conclusion === `${x} → ${z}`;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    {
+                        id: 'CONJ_INTRO',
+                        name: 'Conjunction Introduction',
+                        pattern: ['X', 'Y'],
+                        conclusion: 'X ∧ Y',
+                        description: 'From X and Y, derive X ∧ Y',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 2) return false;
+                            // Accept both orders
+                            const conj1 = `${premises[0]} ∧ ${premises[1]}`;
+                            const conj2 = `${premises[1]} ∧ ${premises[0]}`;
+                            return conclusion === conj1 || conclusion === conj2;
+                        }
+                    },
+                    {
+                        id: 'CONJ_ELIM_L',
+                        name: 'Conjunction Elimination (Left)',
+                        pattern: ['X ∧ Y'],
+                        conclusion: 'X',
+                        description: 'From X ∧ Y, derive X',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 1) return false;
+                            if (!premises[0].includes('∧')) return false;
+                            const parts = premises[0].split(' ∧ ');
+                            // Accept either side as valid
+                            return parts[0] === conclusion || parts[1] === conclusion;
+                        }
+                    },
+                    {
+                        id: 'CONJ_ELIM_R',
+                        name: 'Conjunction Elimination (Right)',
+                        pattern: ['X ∧ Y'],
+                        conclusion: 'Y',
+                        description: 'From X ∧ Y, derive Y',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 1) return false;
+                            if (!premises[0].includes('∧')) return false;
+                            const parts = premises[0].split(' ∧ ');
+                            // Accept either side as valid
+                            return parts[0] === conclusion || parts[1] === conclusion;
+                        }
+                    },
+                    {
+                        id: 'DISJ_ELIM',
+                        name: 'Disjunctive Syllogism',
+                        pattern: ['X ∨ Y', '¬X'],
+                        conclusion: 'Y',
+                        description: 'From X or Y and not X, derive Y',
+                        validate: (premises, conclusion) => {
+                            if (premises.length !== 2) return false;
+                            
+                            const disjIndex = premises.findIndex(p => p.includes('∨'));
+                            if (disjIndex === -1) return false;
+                            
+                            const disjunction = premises[disjIndex];
+                            const other = premises[1 - disjIndex];
+                            
+                            const [left, right] = disjunction.split(' ∨ ');
+                            
+                            // Check if the other premise negates the left part
+                            if (other === `¬${left}`) {
+                                return conclusion === right;
+                            }
+                            
+                            // Check if the other premise negates the right part
+                            if (other === `¬${right}`) {
+                                return conclusion === left;
+                            }
+                            
+                            return false;
+                        }
+                    }
+                ];
+            }
+            
+            initializeProblemDatabase() {
+                this.problemDatabase = [
+                    // EASY - Basic single-step inferences
+                    {
+                        id: 1,
+                        premises: ['P', 'P → Q'],
+                        goal: 'Q',
+                        difficulty: 'Easy',
+                        hint: 'Use Modus Ponens: From P and P → Q, derive Q'
+                    },
+                    {
+                        id: 2,
+                        premises: ['¬Q', 'P → Q'],
+                        goal: '¬P',
+                        difficulty: 'Easy',
+                        hint: 'Use Modus Tollens: From ¬Q and P → Q, derive ¬P'
+                    },
+                    {
+                        id: 3,
+                        premises: ['P', 'Q'],
+                        goal: 'P ∧ Q',
+                        difficulty: 'Easy',
+                        hint: 'Use Conjunction Introduction: From P and Q, derive P ∧ Q'
+                    },
+                    {
+                        id: 4,
+                        premises: ['P ∧ Q'],
+                        goal: 'P',
+                        difficulty: 'Easy',
+                        hint: 'Use Conjunction Elimination (Left): From P ∧ Q, derive P'
+                    },
+                    {
+                        id: 5,
+                        premises: ['P ∧ Q'],
+                        goal: 'Q',
+                        difficulty: 'Easy',
+                        hint: 'Use Conjunction Elimination (Right): From P ∧ Q, derive Q'
+                    },
+                    // Removed id: 6 (Double Negation axiom)
+                    // Removed id: 11 (Contradiction axiom)
+                    
+                    // MEDIUM - Two-step derivations
+                    {
+                        id: 7,
+                        premises: ['P → Q', 'Q → R'],
+                        goal: 'P → R',
+                        difficulty: 'Medium',
+                        hint: 'Use Hypothetical Syllogism: Chain the implications P → Q and Q → R'
+                    },
+                    {
+                        id: 8,
+                        premises: ['P → Q', 'R → S', 'P', 'R'],
+                        goal: 'Q ∧ S',
+                        difficulty: 'Medium',
+                        hint: 'First use Modus Ponens twice to get Q and S, then use Conjunction Introduction'
+                    },
+                    {
+                        id: 10,
+                        premises: ['P ∨ Q', '¬P'],
+                        goal: 'Q',
+                        difficulty: 'Medium',
+                        hint: 'Use Disjunctive Syllogism: From P ∨ Q and ¬P, derive Q'
+                    },
+                    {
+                        id: 12,
+                        premises: ['P ∨ Q', '¬Q'],
+                        goal: 'P',
+                        difficulty: 'Medium',
+                        hint: 'Use Disjunctive Syllogism: From P ∨ Q and ¬Q, derive P'
+                    },
+                    {
+                        id: 13,
+                        premises: ['P', 'Q ∨ R'],
+                        goal: 'P ∧ Q ∨ R',
+                        difficulty: 'Medium',
+                        hint: 'Use Conjunction Introduction'
+                    },
+                    {
+                        id: 14,
+                        premises: ['P ∧ Q', 'R'],
+                        goal: 'P ∧ Q ∧ R',
+                        difficulty: 'Medium',
+                        hint: 'Use Conjunction Introduction'
+                    },
     
-    <div class="columns is-centered is-flex-direction-row is-flex-wrap-wrap is-align-content-start">
-        <div  class="column is-6-desktop simulation">
-                            <div class="v-table-wrap">
-                                <table class="table is-bordered is-fullwidth v-table-primary mb-2">
-                                    <thead>
-                                        <tr>
-                                            <th>P</th>
-                                            <th>Q</th>
-                                            <th>&#172;P</th>
-                                            <th>&#172;P &#8744; Q</th>
-                                            <th>P &#8658; Q</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td >0</td>
-                                            <td >0</td>
-                                            <td ><input type="number" class="bit" id="3_1" min="0" max="1"></td>
-                                            <td ><input disabled type="number" class="bit" id="4_1" min="0" max="1"> </td>
-                                            <td ><input disabled type="number" class="bit" id="5_1" min="0" max="1"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="1_2">0</td>
-                                            <td id="2_2">1</td>
-                                            <td><input type="number" class="bit" id="3_2" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="4_2" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="5_2" min="0" max="1"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="1_3">1</td>
-                                            <td id="2_3">0</td>
-                                            <td><input type="number" class="bit" id="3_3" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="4_3" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="5_3" min="0" max="1"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="1_4">1</td>
-                                            <td id="2_4">1</td>
-                                            <td><input type="number" class="bit" id="3_4" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="4_4" min="0" max="1"></td>
-                                            <td><input disabled type="number" class="bit" id="5_4" min="0" max="1"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2"><button class="v-button" onclick="reset()">Reset</button></td>
-                                            <td><button id="3_5" class="v-button" onclick="checkColumn(3)">Verify</button></td>
-                                            <td><button id="4_5" disabled class="v-button" onclick="checkColumn(4)">Verify</button></td>
-                                            <td><button id="5_5" disabled class="v-button" onclick="checkColumn(5)">Submit</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    // HARD - Multi-step and advanced
+                    {
+                        id: 15,
+                        premises: ['P → Q', 'Q → R', 'P'],
+                        goal: 'R',
+                        difficulty: 'Hard',
+                        hint: 'Use Modus Ponens to get Q, then again to get R'
+                    },
+                    {
+                        id: 16,
+                        premises: ['¬R', 'P → Q', 'Q → R'],
+                        goal: '¬P',
+                        difficulty: 'Hard',
+                        hint: 'Use Modus Tollens on Q → R, then again on P → Q'
+                    },
+                    {
+                        id: 17,
+                        premises: ['P → Q', 'Q → R', 'R → S', 'P'],
+                        goal: 'S',
+                        difficulty: 'Hard',
+                        hint: 'Chain implications using Modus Ponens repeatedly'
+                    },
+                    {
+                        id: 18,
+                        premises: ['P → Q', 'Q → R', 'R → S'],
+                        goal: 'P → S',
+                        difficulty: 'Hard',
+                        hint: 'Use Hypothetical Syllogism twice'
+                    },
+                    // VERY HARD - Multi-step, requires combining rules
+                    {
+                        id: 19,
+                        premises: ['P → Q', 'Q → R ∧ S', 'P', 'R → T'],
+                        goal: 'T ∧ S',
+                        difficulty: 'Hard',
+                        hint: 'Use Modus Ponens to get Q, then Q → R ∧ S to get R ∧ S, then Conjunction Elimination and Modus Ponens to get T, finally Conjunction Introduction'
+                    },
+                    {
+                        id: 20,
+                        premises: ['A → B', 'B → C', 'C → D', 'A'],
+                        goal: 'D',
+                        difficulty: 'Hard',
+                        hint: 'Chain Modus Ponens: A → B, then B → C, then C → D'
+                    },
+                    {
+                        id: 21,
+                        premises: ['X ∨ Y', '¬X', 'Y → Z', 'Z → W'],
+                        goal: 'W',
+                        difficulty: 'Hard',
+                        hint: 'Use Disjunctive Syllogism to get Y, then Modus Ponens twice'
+                    },
+                    {
+                        id: 22,
+                        premises: ['M ∧ N', 'N → P', 'P → Q'],
+                        goal: 'Q',
+                        difficulty: 'Hard',
+                        hint: 'Conjunction Elimination to get N, then Modus Ponens twice'
+                    },
+                    {
+                        id: 23,
+                        premises: ['S → T', 'T ∧ U', 'U → V'],
+                        goal: 'V',
+                        difficulty: 'Hard',
+                        hint: 'Conjunction Elimination to get U, then Modus Ponens'
+                    },
+                    {
+                        id: 24,
+                        premises: ['F ∨ G', '¬F', 'G → H', 'H → J'],
+                        goal: 'J',
+                        difficulty: 'Hard',
+                        hint: 'Disjunctive Syllogism to get G, then Modus Ponens twice'
+                    }
+                ];
+            }
+            
+            setupEventListeners() {
+                // Buttons
+                document.getElementById('newProblemBtn').addEventListener('click', () => this.newProblem());
+                document.getElementById('validateBtn').addEventListener('click', () => this.validateDerivation());
+                document.getElementById('hintBtn').addEventListener('click', () => this.showHint());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetDerivation());
+                document.getElementById('applyRuleBtn').addEventListener('click', () => this.addDerivationStep());
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearSelections());
+                
+                // Floating action buttons
+                const rulesButton = document.getElementById('rulesButton');
+                const rulesPanel = document.getElementById('rulesPanel');
+                const rulesPanelClose = document.getElementById('rulesPanelClose');
+                const infoButton = document.getElementById('infoButton');
+                const infoPanel = document.getElementById('infoPanel');
+                const infoPanelClose = document.getElementById('infoPanelClose');
+                
+                // Panel toggle function
+                const togglePanel = (panel, otherPanels = []) => {
+                    otherPanels.forEach(p => p?.classList.remove('active'));
+                    panel?.classList.toggle('active');
+                };
+                
+                if (rulesButton) {
+                    rulesButton.addEventListener('click', () => {
+                        togglePanel(rulesPanel, [infoPanel]);
+                    });
+                }
+                
+                if (rulesPanelClose) {
+                    rulesPanelClose.addEventListener('click', () => {
+                        rulesPanel?.classList.remove('active');
+                    });
+                }
+                
+                if (infoButton) {
+                    infoButton.addEventListener('click', () => {
+                        togglePanel(infoPanel, [rulesPanel]);
+                    });
+                }
+                
+                if (infoPanelClose) {
+                    infoPanelClose.addEventListener('click', () => {
+                        infoPanel?.classList.remove('active');
+                    });
+                }
+                
+                // Close panels when clicking outside
+                document.addEventListener('click', (event) => {
+                    const panels = [rulesPanel, infoPanel];
+                    const buttons = [rulesButton, infoButton];
+                    panels.forEach((panel, index) => {
+                        if (panel && !panel.contains(event.target) && 
+                            buttons[index] && !buttons[index].contains(event.target) && 
+                            panel.classList.contains('active')) {
+                            panel.classList.remove('active');
+                        }
+                    });
+                });
+            }
+            
+            newProblem() {
+                // Select a random problem
+                const randomIndex = Math.floor(Math.random() * this.problemDatabase.length);
+                this.currentProblem = this.problemDatabase[randomIndex];
+                
+                // Reset derivation sequence
+                this.derivationSequence = [];
+                this.selectedStatements.clear();
+                this.selectedRule = null;
+                
+                // Add premises to derivation sequence
+                this.currentProblem.premises.forEach((premise, index) => {
+                    this.derivationSequence.push({
+                        id: index + 1,
+                        formula: premise,
+                        justification: 'Premise',
+                        type: 'premise'
+                    });
+                });
+                
+                // Set goal formula
+                this.goalFormula = this.currentProblem.goal;
+                
+                // Update UI
+                this.updateUI();
+                this.hideFeedback();
+            }
+            
+            updateUI() {
+                this.updateGoalDisplay();
+                this.updateDerivationSequence();
+                // Removed this.updateAxiomsList();
+                this.updateInferenceRules();
+                this.updateSelectedDisplays();
+            }
+            
+            updateGoalDisplay() {
+                const goalElement = document.getElementById('goalFormula');
+                if (goalElement && this.currentProblem) {
+                    goalElement.innerHTML = '';
+                    
+                    // Create difficulty badge
+                    const difficultyBadge = document.createElement('div');
+                    const difficultyColor = {
+                        'Easy': 'bg-green-100 text-green-800 border-green-200',
+                        'Medium': 'bg-yellow-100 text-yellow-800 border-yellow-200', 
+                        'Hard': 'bg-red-100 text-red-800 border-red-200'
+                    };
+                    
+                    difficultyBadge.className = `goal-badge ${difficultyColor[this.currentProblem.difficulty] || 'bg-gray-100 text-gray-800 border-gray-200'}`;
+                    difficultyBadge.textContent = this.currentProblem.difficulty;
+                    
+                    // Create goal formula text
+                    const goalText = document.createElement('div');
+                    goalText.className = 'formula-display text-xl mt-2 text-center';
+                    goalText.textContent = this.goalFormula;
+                    
+                    goalElement.appendChild(difficultyBadge);
+                    goalElement.appendChild(goalText);
+                }
+            }
+            
+            updateDerivationSequence() {
+                const container = document.getElementById('derivationSequence');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                if (this.derivationSequence.length === 0) {
+                    container.innerHTML = '<div class="text-center py-4 text-gray-500">No statements yet. Start by applying rules to premises.</div>';
+                    return;
+                }
+                
+                this.derivationSequence.forEach((step, index) => {
+                    const stepDiv = document.createElement('div');
+                    const isSelected = this.selectedStatements.has(step.id);
+                    stepDiv.className = `p-3 border rounded-lg cursor-pointer transition-all ${
+                        step.type === 'premise' 
+                            ? (isSelected ? 'bg-blue-200 border-blue-400 selected-item' : 'bg-blue-50 border-blue-200 hover:bg-blue-100') 
+                            : (isSelected ? 'bg-gray-200 border-gray-400 selected-item' : 'bg-gray-50 border-gray-200 hover:bg-gray-100')
+                    }`;
+                    
+                    stepDiv.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono text-sm bg-white px-2 py-1 rounded border">${step.id}</span>
+                                <span class="formula-display">${step.formula}</span>
+                                ${isSelected ? '<span class="text-xs text-blue-600 font-medium">✓ Selected</span>' : ''}
                             </div>
-                    </div>
-        <div class="is-8-desktop is-4-tablet is-12-mobile" style="margin-right: 1vh; padding: 0.1% 0%;">
-            <div class="v-datalist-container components-list">
-                <div class="v-datalist-title">Observations</div>
-                <div id="observations">
-                    <div id="correct" class="is-centered title is-hidden">Correct!</div>
-                    <div id="incorrect" class="is-centered is-hidden">Incorrect</div> 
-                    <div id="plc" class="is-centered">2 answer(s) are incorrect</div>
-                </div>
-            </div>
-        </div>
-    </div>
+                            <span class="text-xs text-gray-500">${step.justification}</span>
+                        </div>
+                    `;
+                    
+                    stepDiv.addEventListener('click', () => this.toggleStatementSelection(step.id));
+                    container.appendChild(stepDiv);
+                });
+            }
+            
+            updateInferenceRules() {
+                const container = document.getElementById('inferenceRules');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                this.inferenceRules.forEach(rule => {
+                    const ruleDiv = document.createElement('div');
+                    const isSelected = this.selectedRule && this.selectedRule.type === 'rule' && this.selectedRule.id === rule.id;
+                    ruleDiv.className = `p-3 border rounded-lg cursor-pointer transition-all card ${
+                        isSelected ? 'bg-blue-200 border-blue-400 selected-item' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                    }`;
+                    
+                    const premisesText = rule.pattern.join(', ');
+                    
+                    // Check if this rule can be applied with current selection
+                    const selectedStmtIds = Array.from(this.selectedStatements);
+                    const selectedStatements = selectedStmtIds.map(id => {
+                        const step = this.derivationSequence.find(s => s.id === id);
+                        return step ? step.formula : null;
+                    }).filter(f => f !== null);
+                    
+                    let previewConclusion = '';
+                    let canApply = false;
+                    
+                    if (selectedStatements.length === rule.pattern.length) {
+                        try {
+                            const derived = this.deriveConclusion(rule, selectedStatements);
+                            if (derived) {
+                                previewConclusion = derived;
+                                canApply = true;
+                            }
+                        } catch (e) {
+                            console.log("Could not derive conclusion", e);
+                        }
+                    }
+                    
+                    ruleDiv.innerHTML = `
+                        <div class="font-semibold text-sm text-purple-800">${rule.id}: ${rule.name}</div>
+                        <div class="formula-display text-sm mt-1">${premisesText} ⊢ ${rule.conclusion}</div>
+                        <div class="text-xs text-gray-600 mt-1">${rule.description}</div>
+                        ${canApply ? `<div class="text-xs text-green-700 font-medium mt-2 bg-green-100 p-1 rounded">Preview: ${previewConclusion}</div>` : ''}
+                        ${isSelected ? '<div class="text-xs text-blue-600 font-medium mt-1">✓ Selected</div>' : ''}
+                    `;
+                    
+                    ruleDiv.addEventListener('click', () => this.selectRule('rule', rule));
+                    container.appendChild(ruleDiv);
+                });
+            }
+            
+            toggleStatementSelection(statementId) {
+                if (this.selectedStatements.has(statementId)) {
+                    this.selectedStatements.delete(statementId);
+                } else {
+                    this.selectedStatements.add(statementId);
+                }
+                this.updateDerivationSequence();
+                this.updateInferenceRules();
+                this.updateSelectedDisplays();
+            }
+            
+            selectRule(type, ruleData) {
+                if (this.selectedRule && this.selectedRule.type === type && this.selectedRule.id === ruleData.id) {
+                    // Deselect if clicking the same rule
+                    this.selectedRule = null;
+                } else {
+                    this.selectedRule = { type, id: ruleData.id, data: ruleData };
+                }
+                this.updateInferenceRules();
+                this.updateSelectedDisplays();
+            }
+            
+            updateSelectedDisplays() {
+                // Update selected statements display
+                const statementsDisplay = document.getElementById('selectedStatementsDisplay');
+                if (statementsDisplay) {
+                    if (this.selectedStatements.size === 0) {
+                        statementsDisplay.textContent = 'No statements selected';
+                        statementsDisplay.className = 'min-h-[2rem] p-2 bg-white border border-gray-300 rounded text-sm text-gray-500';
+                    } else {
+                        const selectedIds = Array.from(this.selectedStatements).sort((a, b) => a - b);
+                        statementsDisplay.textContent = `Statements: ${selectedIds.join(', ')}`;
+                        statementsDisplay.className = 'min-h-[2rem] p-2 bg-blue-50 border border-blue-300 rounded text-sm text-blue-800';
+                    }
+                }
+                
+                // Update selected rule display
+                const ruleDisplay = document.getElementById('selectedRuleDisplay');
+                if (ruleDisplay) {
+                    if (!this.selectedRule) {
+                        ruleDisplay.textContent = 'No rule selected';
+                        ruleDisplay.className = 'min-h-[2rem] p-2 bg-white border border-gray-300 rounded text-sm text-gray-500';
+                    } else {
+                        const rule = this.selectedRule.data;
+                        ruleDisplay.textContent = `${rule.id}: ${rule.name}`;
+                        ruleDisplay.className = 'min-h-[2rem] p-2 bg-purple-50 border-purple-300 text-purple-800 border rounded text-sm';
+                    }
+                }
+            }
+            
+            addDerivationStep() {
+                if (!this.selectedRule) {
+                    this.showFeedback(false, 'Please select an inference rule from the floating panel.');
+                    return;
+                }
+                const selectedStmtIds = Array.from(this.selectedStatements);
+                // Only allow rules
+                this.applyInferenceRule(this.selectedRule.data, selectedStmtIds);
+            }
+            
+            applyInferenceRule(rule, selectedStmtIds) {
+                if (!rule) return;
+                
+                // Get selected statements
+                const selectedStatements = selectedStmtIds.map(id => {
+                    const step = this.derivationSequence.find(s => s.id === id);
+                    return step ? step.formula : null;
+                }).filter(f => f !== null);
+                
+                if (selectedStatements.length === 0) {
+                    this.showFeedback(false, 'Please select statements to apply the rule to.');
+                    return;
+                }
+                
+                // Check if the number of selected statements matches the rule requirements
+                if (selectedStatements.length !== rule.pattern.length) {
+                    this.showFeedback(false, `${rule.name} requires exactly ${rule.pattern.length} statement(s), but ${selectedStatements.length} selected.`);
+                    return;
+                }
+                
+                // Automatically derive the conclusion based on the rule
+                try {
+                    const conclusion = this.deriveConclusion(rule, selectedStatements);
+                    
+                    if (conclusion) {
+                        // Validate the inference using the rule's validation function
+                        if (rule.validate(selectedStatements, conclusion)) {
+                            const newStep = {
+                                id: this.derivationSequence.length + 1,
+                                formula: conclusion,
+                                justification: `${rule.id} (${selectedStmtIds.join(', ')})`,
+                                type: 'derived',
+                                usedStatements: selectedStmtIds
+                            };
+                            
+                            this.derivationSequence.push(newStep);
+                            this.updateUI();
+                            this.clearSelections();
+                            
+                            this.showFeedback(true, `✓ Applied ${rule.name}! Derived: ${conclusion}`);
+                            
+                            // Check if goal is reached
+                            if (conclusion === this.goalFormula) {
+                                this.showFeedback(true, '🎉 Congratulations! You have successfully derived the goal!');
+                            }
+                        } else {
+                            this.showFeedback(false, `❌ Cannot apply ${rule.name} to the selected statements.`);
+                        }
+                    } else {
+                        this.showFeedback(false, `❌ Cannot derive a conclusion using ${rule.name} with the selected statements.`);
+                    }
+                } catch (e) {
+                    this.showFeedback(false, `❌ Error applying rule: ${e.message}`);
+                }
+            }
 
-    <div style="margin-left:90%">
-        <button id="next" class="v-button is-hidden">Next</button>
-    </div>
+            removeOuterParentheses(formula) {
+                // Improved to handle nested parentheses
+                if (formula.startsWith('(') && formula.endsWith(')')) {
+                    let count = 0;
+                    for (let i = 0; i < formula.length; i++) {
+                        if (formula[i] === '(') count++;
+                        else if (formula[i] === ')') count--;
+                        // Found unbalanced parentheses before end
+                        if (count === 0 && i < formula.length - 1) return formula;
+                    }
+                    // Only remove if parentheses are balanced
+                    if (count === 0) return formula.substring(1, formula.length - 1);
+                }
+                return formula;
+            }
 
-    <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
-    <script src="./js/truth-table-1.js"></script>
+            splitImplication(formula) {
+                formula = this.removeOuterParentheses(formula);
+                let depth = 0;
+                // Improved parsing logic
+                for (let i = 0; i < formula.length; i++) {
+                    if (formula[i] === '(') depth++;
+                    else if (formula[i] === ')') depth--;
+                    else if (depth === 0 && formula[i] === '→') {
+                        return [
+                            this.removeOuterParentheses(formula.substring(0, i).trim()),
+                            this.removeOuterParentheses(formula.substring(i + 1).trim())
+                        ];
+                    }
+                }
+                return null;
+            }
+
+            deriveConclusion(rule, selectedStatements) {
+                // Helper to normalize formulas
+                const normalize = (formula) => {
+                    return this.removeOuterParentheses(formula)
+                        .replace(/\s+/g, ' ') // Normalize spaces
+                        .trim();
+                };
+
+                if (rule.id === 'MP') {
+                    const impIndex = selectedStatements.findIndex(s => s.includes('→'));
+                    if (impIndex === -1) return null;
+                    
+                    const implication = selectedStatements[impIndex];
+                    const other = selectedStatements[1 - impIndex];
+                    
+                    const parts = this.splitImplication(implication);
+                    if (!parts) return null;
+                    
+                    const [antecedent, consequent] = parts.map(normalize);
+                    const normalizedOther = normalize(other);
+                    
+                    // Compare with normalized formulas
+                    if (normalizedOther === antecedent) {
+                        return consequent;
+                    }
+                    return null;
+                }
+                if (rule.id === 'MT') {
+                    const impIndex = selectedStatements.findIndex(s => s.includes('→'));
+                    if (impIndex === -1) return null;
+                    
+                    const implication = selectedStatements[impIndex];
+                    const other = selectedStatements[1 - impIndex];
+                    
+                    const parts = this.splitImplication(implication);
+                    if (!parts) return null;
+                    
+                    const [antecedent, consequent] = parts.map(normalize);
+                    const normalizedOther = normalize(other);
+                    
+                    if (normalizedOther === `¬${consequent}` || normalizedOther === `¬(${consequent})`) {
+                        return `¬${antecedent}`;
+                    }
+                    return null;
+                }
+                if (rule.id === 'HS') {
+                    const [first, second] = selectedStatements;
+                    if (!first.includes('→') || !second.includes('→')) return null;
+                    const [x, y1] = this.splitImplication(first) || [];
+                    const [y2, z] = this.splitImplication(second) || [];
+                    if (normalize(y1) === normalize(y2)) {
+                        return `${normalize(x)} → ${normalize(z)}`;
+                    }
+                    return null;
+                }
+                if (rule.id === 'CONJ_INTRO') {
+                    return `${normalize(selectedStatements[0])} ∧ ${normalize(selectedStatements[1])}`;
+                }
+                if (rule.id === 'CONJ_ELIM_L') {
+                    const conjunction = normalize(selectedStatements[0]);
+                    if (!conjunction.includes('∧')) return null;
+                    // Find top-level conjunction
+                    let depth = 0;
+                    for (let i = 0; i < conjunction.length; i++) {
+                        if (conjunction[i] === '(') depth++;
+                        else if (conjunction[i] === ')') depth--;
+                        else if (depth === 0 && conjunction[i] === '∧') {
+                            return normalize(conjunction.substring(0, i));
+                        }
+                    }
+                    return null;
+                }
+                if (rule.id === 'CONJ_ELIM_R') {
+                    const conjunction = normalize(selectedStatements[0]);
+                    if (!conjunction.includes('∧')) return null;
+                    // Find top-level conjunction
+                    let depth = 0;
+                    for (let i = 0; i < conjunction.length; i++) {
+                        if (conjunction[i] === '(') depth++;
+                        else if (conjunction[i] === ')') depth--;
+                        else if (depth === 0 && conjunction[i] === '∧') {
+                            return normalize(conjunction.substring(i + 1));
+                        }
+                    }
+                    return null;
+                }
+                if (rule.id === 'DISJ_ELIM') {
+                    const disjIndex = selectedStatements.findIndex(p => p.includes('∨'));
+                    if (disjIndex === -1) return null;
+                    const disjunction = normalize(selectedStatements[disjIndex]);
+                    const other = normalize(selectedStatements[1 - disjIndex]);
+                    // Find top-level disjunction
+                    let depth = 0;
+                    for (let i = 0; i < disjunction.length; i++) {
+                        if (disjunction[i] === '(') depth++;
+                        else if (disjunction[i] === ')') depth--;
+                        else if (depth === 0 && disjunction[i] === '∨') {
+                            const left = normalize(disjunction.substring(0, i));
+                            const right = normalize(disjunction.substring(i + 1));
+                            if (other === `¬${left}`) return right;
+                            if (other === `¬${right}`) return left;
+                        }
+                    }
+                    return null;
+                }
+                return null;
+            }
+
+            clearSelections() {
+                this.selectedStatements.clear();
+                this.selectedRule = null;
+                this.updateSelectedDisplays();
+                this.updateDerivationSequence();
+                this.updateInferenceRules();
+            }
+
+            validateDerivation() {
+                // Check if the goal has been derived
+                const hasGoal = this.derivationSequence.some(step => 
+                    step.formula === this.goalFormula
+                );
+                
+                if (hasGoal) {
+                    this.showFeedback(true, '✓ Valid derivation! The goal has been successfully derived.');
+                } else {
+                    this.showFeedback(false, 'The goal has not been derived yet. Continue building your derivation.');
+                }
+            }
+
+            showHint() {
+                if (this.currentProblem && this.currentProblem.hint) {
+                    this.showFeedback(true, `💡 Hint: ${this.currentProblem.hint}`);
+                } else {
+                    this.showFeedback(true, '💡 Hint: Look at the available premises and try to apply inference rules to get closer to the goal.');
+                }
+            }
+
+            resetDerivation() {
+                // Keep only the premises
+                this.derivationSequence = this.derivationSequence.filter(step => step.type === 'premise');
+                this.selectedStatements.clear();
+                this.selectedRule = null;
+                this.updateUI();
+                this.hideFeedback();
+            }
+
+            showFeedback(isSuccess, message) {
+                const feedbackElement = document.getElementById('feedback');
+                if (!feedbackElement) return;
+                
+                feedbackElement.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-blue-100', 
+                                             'text-green-800', 'text-red-800', 'text-blue-800');
+                
+                if (isSuccess) {
+                    feedbackElement.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    feedbackElement.classList.add('bg-red-100', 'text-red-800');
+                }
+                
+                feedbackElement.textContent = message;
+                feedbackElement.classList.remove('hidden');
+            }
+
+            hideFeedback() {
+                const feedbackElement = document.getElementById('feedback');
+                if (feedbackElement) {
+                    feedbackElement.classList.add('hidden');
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            window.logicSystem = new PropositionalLogic();
+        });
+    </script>
 </body>
-
 </html>
