@@ -1,1 +1,11 @@
-The main purpose of this experiment is to formally introduce the student to compound propositions obtained from atomic propositions using logical connectives, and study the inferences obtained from them. In particular, this experiment is proposed to familiarize student with the formal notions of axioms and derivations. We shall also intend to introduce derived connectives and inference rules such as <i>Modus Ponens</i>. We hope to also introduce the notion of logical equivalence through this experiment.
+- **Formally introduce compound propositions**: Learn how atomic propositions combine using logical connectives (∧, ∨, →, ↔, ¬) to form complex logical statements
+
+- **Study logical inferences**: Understand how conclusions can be systematically derived from given premises using formal reasoning methods
+
+- **Master axioms and derivations**: Familiarize students with the foundational concepts of formal logic systems and step-by-step proof construction
+
+- **Apply inference rules**: Learn and practice essential inference rules such as *Modus Ponens*, *Modus Tollens*, and *Hypothetical Syllogism* in practical problem-solving scenarios
+
+- **Explore logical equivalence**: Understand when different logical expressions represent the same truth conditions and how to verify equivalences using systematic methods
+
+- **Develop formal reasoning skills**: Build competency in constructing valid logical arguments and identifying fallacious reasoning patterns
