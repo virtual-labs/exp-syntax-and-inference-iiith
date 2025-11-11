@@ -299,10 +299,10 @@ Therefore, we'll either go to the beach or go to the movies
 P
 Q
 ---------
-Therefore, P and Q
+Therefore, P ∧ Q
 ```
 
-**Example:** If we know "Alice is smart" and "Alice is kind," we can conclude "Alice is smart and kind."
+**Example:** If we know "Alice is smart" and "Alice is kind," we can conclude "Alice is smart ∧ kind."
 
 #### 7. Simplification (Simp): "Extracting Facts"
 

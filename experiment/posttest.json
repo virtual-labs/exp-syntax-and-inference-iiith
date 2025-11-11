@@ -143,13 +143,13 @@
         "a": "De Morgan's Laws",
         "b": "Distributive Law",
         "c": "Double Negation Law",
-        "d": "Material Implication"
+        "d": "Implication Negation"
       },
       "explanations": {
         "a": "Incorrect. While De Morgan's Laws deal with negations, they specifically relate to negating conjunctions and disjunctions, not implications.",
         "b": "Incorrect. The Distributive Law deals with distributing AND over OR or vice versa, which isn't the main law being used here.",
         "c": "Incorrect. The Double Negation Law removes or adds paired negations, which isn't the primary transformation here.",
-        "d": "Correct! This is an application of the Material Implication law, which states that p → q ≡ ¬p ∨ q. When we negate an implication, we get ¬(¬p ∨ q), which by De Morgan's Law becomes p ∧ ¬q."
+        "d": "Correct! This equivalence shows that the negation of an implication p → q (which is equivalent to ¬p ∨ q) results in p ∧ ¬q. We first use the equivalence p → q ≡ ¬p ∨ q, then apply negation and De Morgan's Laws to get p ∧ ¬q."
       },
       "correctAnswer": "d",
       "difficulty": "advanced"

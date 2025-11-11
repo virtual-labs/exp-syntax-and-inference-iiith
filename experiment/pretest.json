@@ -19,20 +19,20 @@
       "difficulty": "beginner"
     },
     { 
-      "question": "If the weather is warm and the sky is clear, then we go boating. Pick the valid conclusion. [Hint: try to think of each proposition as a symbol]",
+      "question": "If the weather is warm and the sky is clear, then we go boating. We did not go boating. What can we validly conclude? [Hint: try to think of each proposition as a symbol]",
       "answers": {
-        "a": "We did not go boating, so the weather must not have been warm",
-        "b": "The sky was cloudy and the weather was warm, so we did not go boating.",
-        "c": "We went boating, so the weather must have been warm and the sky clear",
-        "d": "The sky was clear and the weather was warm. We did not go boating"
+        "a": "The weather is not warm",
+        "b": "The sky is not clear",
+        "c": "Either the weather is not warm or the sky is not clear (or both)",
+        "d": "The weather must be warm and the sky must be clear"
       },
       "explanations": {
-        "a": "Incorrect. This is a fallacy known as denying the consequent. Just because we didn't go boating doesn't necessarily mean the weather wasn't warm - the sky might not have been clear.",
-        "b": "Incorrect. The original statement only tells us what happens when both conditions are met (warm weather AND clear sky), it doesn't tell us what happens otherwise.",
-        "c": "Incorrect. This is affirming the consequent. Going boating could happen for other reasons, not necessarily because of warm weather and clear sky.",
-        "d": "Correct! This contradicts the original statement. If the weather is warm AND the sky is clear, we must go boating. This answer violates that rule, making it logically invalid."
+        "a": "Incorrect. While the weather might not be warm, we cannot conclude this with certainty. The sky could be cloudy instead.",
+        "b": "Incorrect. While the sky might not be clear, we cannot conclude this with certainty. The weather could be cold instead.",
+        "c": "Correct! By Modus Tollens: If (warm AND clear) → boating, and we didn't go boating, then the antecedent must be false. Since (warm AND clear) is false, at least one of these must be false: either it's not warm OR it's not clear (or both).",
+        "d": "Incorrect. This contradicts what we know. If the weather were warm and the sky were clear, we would go boating, but we didn't. So this cannot be true."
       },
-      "correctAnswer": "d",
+      "correctAnswer": "c",
       "difficulty": "beginner"
     },
     {
@@ -104,18 +104,18 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which of the following is a valid application of the Resolution rule?",
+      "question": "Which of the following is a valid application of the Disjunctive Syllogism rule?",
       "answers": {
-        "a": "(p ∨ q), (¬p ∨ r) ⊢ (q ∨ r)",
+        "a": "(p ∨ q), (¬p) ⊢ q",
         "b": "(p ∨ q), (¬p ∨ ¬q) ⊢ p",
         "c": "(p ∨ q), (p ∨ ¬q) ⊢ p",
         "d": "(p ∨ q), (¬q ∨ r) ⊢ p"
       },
       "explanations": {
-        "a": "Correct! Resolution allows us to resolve two clauses on a complementary literal (here, p and ¬p) to produce a new clause containing all other literals. From (p ∨ q) and (¬p ∨ r), we can resolve on p to get (q ∨ r).",
-        "b": "Incorrect. Resolution would yield (q ∨ ¬q), which is a tautology, not p.",
-        "c": "Incorrect. Resolution on q and ¬q would yield p ∨ p, which simplifies to p, but this isn't how resolution works with these clauses.",
-        "d": "Incorrect. Resolution would yield (p ∨ r), not just p."
+        "a": "Correct! Disjunctive Syllogism states: from (p ∨ q) and ¬p, we can conclude q. By eliminating p, we are left with q as the only valid conclusion.",
+        "b": "Incorrect. This doesn't follow the Disjunctive Syllogism pattern. We cannot conclude p from these premises.",
+        "c": "Incorrect. This doesn't follow the Disjunctive Syllogism pattern. The second premise doesn't eliminate one of the disjuncts.",
+        "d": "Incorrect. The second premise introduces r, which wasn't in the original disjunction, so we cannot apply Disjunctive Syllogism."
       },
       "correctAnswer": "a",
       "difficulty": "advanced"
@@ -138,7 +138,7 @@
       "difficulty": "advanced"
     },
     {
-      "question": "Which of the following formulas is satisfiable but not valid?",
+      "question": "Which of the following formulas is satisfiable (true in at least one interpretation) but not a tautology (not true in all interpretations)?",
       "answers": {
         "a": "p ∨ ¬p",
         "b": "p ∧ ¬p",
@@ -146,10 +146,10 @@
         "d": "p ∧ q"
       },
       "explanations": {
-        "a": "Incorrect. This is a tautology (valid formula) - it's true under all interpretations.",
+        "a": "Incorrect. This is a tautology (true under all interpretations) - it's true whether p is true or false.",
         "b": "Incorrect. This is a contradiction - it's false under all interpretations (not satisfiable).",
         "c": "Incorrect. This is a tautology - it's true under all interpretations.",
-        "d": "Correct! This formula is satisfiable (true when both p and q are true) but not valid (false when either p or q is false). A formula that is satisfiable but not valid has at least one true interpretation and at least one false interpretation."
+        "d": "Correct! This formula is satisfiable (true when both p and q are true) but not a tautology (false when either p or q is false). A formula that is satisfiable but not a tautology has at least one interpretation where it's true and at least one where it's false."
       },
       "correctAnswer": "d",
       "difficulty": "advanced"
