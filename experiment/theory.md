@@ -1,4 +1,3 @@
-# Theory: Syntax and Inference in Propositional Logic
 
 ## Introduction: The Language of Logic
 
@@ -55,10 +54,11 @@ Just as we use words like "and," "or," and "not" in everyday speech, proposition
 - If B = "The door is open," then ¬B = "The door is not open"
 
 **Truth Table:**
-| A | ¬A |
-|---|-----|
-| T | F   |
-| F | T   |
+
+| A  | ¬A  |
+|----|-----|
+| T  | F   |
+| F  | T   |
 
 #### 2. Conjunction (∧): The "AND" Operator
 
@@ -70,6 +70,7 @@ Just as we use words like "and," "or," and "not" in everyday speech, proposition
 - "I will go to the movies AND eat popcorn"
 
 **Truth Table:**
+
 | A | B | A ∧ B |
 |---|---|-------|
 | T | T | T     |
@@ -106,6 +107,7 @@ Just as we use words like "and," "or," and "not" in everyday speech, proposition
 - "IF you study hard, THEN you will pass the exam"
 
 **Truth Table:**
+
 | A | B | A → B |
 |---|---|-------|
 | T | T | T     |
@@ -125,6 +127,7 @@ Just as we use words like "and," "or," and "not" in everyday speech, proposition
 - "You pass the course IF AND ONLY IF you score above 70%"
 
 **Truth Table:**
+
 | A | B | A ↔ B |
 |---|---|-------|
 | T | T | T     |
