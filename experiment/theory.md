@@ -90,6 +90,7 @@ Just as we use words like "and," "or," and "not" in everyday speech, proposition
 - "I will have coffee OR tea" (inclusive or—you might have both!)
 
 **Truth Table:**
+
 | A | B | A ∨ B |
 |---|---|-------|
 | T | T | T     |
