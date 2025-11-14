@@ -2,38 +2,157 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "All logical sentences can be written using only:",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "∧ and ∨",
+        "b": "¬, ∧ and ∨",
+        "c": "⇒ and ¬",
+        "d": "None of the above."
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. While AND (∧) and OR (∨) are important operators, they alone are not sufficient. Negation (¬) is essential for expressing statements like 'not p'.",
+        "b": "Correct! These three operators form a complete set of logical connectives. Any logical formula can be expressed using only NOT (¬), AND (∧), and OR (∨). Other operators like implies (→) and equivalence (↔) can be rewritten using these three.",
+        "c": "Incorrect. While implies (⇒) and NOT (¬) can express many logical statements, they cannot express simple conjunctions (AND) without complex transformations.",
+        "d": "Incorrect. Option b provides a complete set of logical operators that can express all possible logical statements."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following is equivalent to p → q?",
+      "answers": {
+        "a": "¬p ∨ q",
+        "b": "p ∧ q",
+        "c": "¬p ∧ q",
+        "d": "p ∨ ¬q"
+      },
+      "explanations": {
+        "a": "Correct! The implication p → q is logically equivalent to ¬p ∨ q. This can be verified using a truth table or by understanding that 'if p then q' means either p is false OR q is true.",
+        "b": "Incorrect. p ∧ q means both p and q are true, which is more restrictive than p → q.",
+        "c": "Incorrect. ¬p ∧ q means 'not p and q', which is only one case where p → q is true.",
+        "d": "Incorrect. p ∨ ¬q is not equivalent to p → q. Consider when p is true and q is true."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "What is the negation of 'p ∧ q'?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "¬p ∧ ¬q",
+        "b": "¬p ∨ ¬q",
+        "c": "¬(p ∨ q)",
+        "d": "p ∨ q"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. This negates both p and q and keeps AND, but De Morgan's laws state that negation changes AND to OR.",
+        "b": "Correct! By De Morgan's laws, ¬(p ∧ q) ≡ ¬p ∨ ¬q. The negation of 'both' is 'not at least one'.",
+        "c": "Incorrect. This is negating a different expression (p ∨ q) rather than (p ∧ q).",
+        "d": "Incorrect. Simply removing the negation and changing AND to OR is not the correct way to negate a conjunction."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following rules allows us to conclude q from premises p → q and ¬p → q?",
+      "answers": {
+        "a": "Modus Ponens",
+        "b": "Modus Tollens",
+        "c": "Case Analysis",
+        "d": "Hypothetical Syllogism"
+      },
+      "explanations": {
+        "a": "Incorrect. Modus Ponens requires p and p → q to conclude q, but here we have two implications.",
+        "b": "Incorrect. Modus Tollens uses p → q and ¬q to conclude ¬p, which doesn't match our premises.",
+        "c": "Correct! Case Analysis (also called Proof by Cases) states that if p → q and ¬p → q, then q must be true because either p or ¬p must be true (Law of Excluded Middle).",
+        "d": "Incorrect. Hypothetical Syllogism combines p → q and q → r to get p → r, which doesn't match our premises."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the minimal number of rows needed in a truth table to prove that two propositional formulas with 3 variables are NOT equivalent?",
+      "answers": {
+        "a": "1",
+        "b": "4",
+        "c": "8",
+        "d": "16"
+      },
+      "explanations": {
+        "a": "Correct! To prove non-equivalence, we only need to find ONE assignment of truth values where the formulas give different results. This can be done with a single row showing such a case.",
+        "b": "Incorrect. While 4 rows would be needed for a complete truth table with 2 variables, we don't need to check all possibilities to prove non-equivalence.",
+        "c": "Incorrect. 8 rows would be the complete truth table for 3 variables, but this is unnecessary for proving non-equivalence.",
+        "d": "Incorrect. 16 rows would be for 4 variables, and again, a complete truth table is not needed for proving non-equivalence."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Given the premises 'If it rains, the ground is wet' and 'The ground is not wet', what can be validly concluded?",
+      "answers": {
+        "a": "It must be raining",
+        "b": "It might be raining",
+        "c": "It is not raining",
+        "d": "We cannot conclude anything about rain"
+      },
+      "explanations": {
+        "a": "Incorrect. This contradicts the premises - if it were raining, the ground would be wet, but we know it's not wet.",
+        "b": "Incorrect. If it were raining, the ground would have to be wet according to the first premise, but we know it's not wet.",
+        "c": "Correct! This is an application of Modus Tollens: from p → q and ¬q, we can conclude ¬p. If the ground being wet follows from rain, and the ground is not wet, then it cannot be raining.",
+        "d": "Incorrect. We can make a valid conclusion using Modus Tollens, one of the fundamental rules of inference."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following is a valid step in converting a formula to Conjunctive Normal Form (CNF)?",
+      "answers": {
+        "a": "Replace p → q with p ∧ ¬q",
+        "b": "Replace p → q with ¬p ∨ q",
+        "c": "Replace ¬(p ∨ q) with ¬p ∨ ¬q",
+        "d": "Replace p ↔ q with (p → q) ∨ (q → p)"
+      },
+      "explanations": {
+        "a": "Incorrect. p → q is equivalent to ¬p ∨ q, not p ∧ ¬q. This transformation would change the meaning of the formula.",
+        "b": "Correct! Converting implications to disjunctions using ¬p ∨ q is a valid step in CNF conversion. This maintains logical equivalence while moving toward the required form.",
+        "c": "Incorrect. By De Morgan's laws, ¬(p ∨ q) ≡ ¬p ∧ ¬q, not ¬p ∨ ¬q.",
+        "d": "Incorrect. p ↔ q should be converted to (p ∧ q) ∨ (¬p ∧ ¬q) first, then further transformed for CNF."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "In propositional logic, which of the following best describes a sound argument?",
+      "answers": {
+        "a": "An argument where the conclusion follows from the premises using valid rules",
+        "b": "An argument with true premises and a true conclusion",
+        "c": "An argument that is valid and has true premises",
+        "d": "An argument where each step uses only one inference rule"
+      },
+      "explanations": {
+        "a": "Incorrect. This describes a valid argument, but soundness requires more than just valid reasoning.",
+        "b": "Incorrect. Having true premises and a true conclusion is not sufficient; the reasoning must also be valid.",
+        "c": "Correct! A sound argument must be valid (conclusion follows logically from premises) AND have true premises. This ensures the conclusion is not only logically necessary but also true.",
+        "d": "Incorrect. The number of inference rules used per step is not related to soundness."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Which logical law is being applied in the following equivalence: ¬(p → q) ≡ p ∧ ¬q?",
+      "answers": {
+        "a": "De Morgan's Laws",
+        "b": "Distributive Law",
+        "c": "Double Negation Law",
+        "d": "Implication Negation"
+      },
+      "explanations": {
+        "a": "Incorrect. While De Morgan's Laws deal with negations, they specifically relate to negating conjunctions and disjunctions, not implications.",
+        "b": "Incorrect. The Distributive Law deals with distributing AND over OR or vice versa, which isn't the main law being used here.",
+        "c": "Incorrect. The Double Negation Law removes or adds paired negations, which isn't the primary transformation here.",
+        "d": "Correct! This equivalence shows that the negation of an implication p → q (which is equivalent to ¬p ∨ q) results in p ∧ ¬q. We first use the equivalence p → q ≡ ¬p ∨ q, then apply negation and De Morgan's Laws to get p ∧ ¬q."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
     }
   ]
 }

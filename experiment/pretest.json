@@ -2,38 +2,157 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "Which of the following is not an atomic proposition?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The sun is hot",
+        "b": "I take a taxi if I have enough money",
+        "c": "It was almost noon",
+        "d": "There was no water in the jug on the table in the kitchen"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. This is an atomic proposition as it makes a single, simple statement that cannot be broken down further.",
+        "b": "Correct! This is a compound proposition that combines two atomic propositions: 'I take a taxi' and 'I have enough money' using an if-then relationship.",
+        "c": "Incorrect. This is an atomic proposition as it makes a single statement about time that cannot be broken down further.",
+        "d": "Incorrect. While this is a detailed statement, it is still making a single claim about the absence of water and cannot be broken into separate true/false statements."
       },
-      "correctAnswer": "a",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     },
-    {
-      "question": "This is a Sample Question 2?",
+    { 
+      "question": "If the weather is warm and the sky is clear, then we go boating. We did not go boating. What can we validly conclude? [Hint: try to think of each proposition as a symbol]",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The weather is not warm",
+        "b": "The sky is not clear",
+        "c": "Either the weather is not warm or the sky is not clear (or both)",
+        "d": "The weather must be warm and the sky must be clear"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. While the weather might not be warm, we cannot conclude this with certainty. The sky could be cloudy instead.",
+        "b": "Incorrect. While the sky might not be clear, we cannot conclude this with certainty. The weather could be cold instead.",
+        "c": "Correct! By Modus Tollens: If (warm AND clear) → boating, and we didn't go boating, then the antecedent must be false. Since (warm AND clear) is false, at least one of these must be false: either it's not warm OR it's not clear (or both).",
+        "d": "Incorrect. This contradicts what we know. If the weather were warm and the sky were clear, we would go boating, but we didn't. So this cannot be true."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
+    },
+    {
+      "question": "What is the logical form of the statement: 'Either it's raining or I'll go for a walk'?",
+      "answers": {
+        "a": "p ∧ q",
+        "b": "p ∨ q",
+        "c": "p → q",
+        "d": "¬p → q"
+      },
+      "explanations": {
+        "a": "Incorrect. The ∧ (AND) operator means both statements must be true, but in this case, we're saying one OR the other will happen.",
+        "b": "Correct! The ∨ (OR) operator correctly represents 'either/or' statements. Here, either it's raining (p) OR I'll go for a walk (q).",
+        "c": "Incorrect. The → (implies) operator would mean 'if it's raining then I'll go for a walk', which is different from saying either one or the other will occur.",
+        "d": "Incorrect. While this could be a valid transformation of p ∨ q, it's not the most direct representation of the original statement."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which inference rule states that if we know 'p → q' and 'p' is true, then 'q' must be true?",
+      "answers": {
+        "a": "Modus Ponens",
+        "b": "Modus Tollens",
+        "c": "Hypothetical Syllogism",
+        "d": "Disjunctive Syllogism"
+      },
+      "explanations": {
+        "a": "Correct! Modus Ponens is the rule that states if we have 'p → q' and 'p', we can conclude 'q'. For example, if 'if it rains, the ground is wet' and 'it rains' are true, then 'the ground is wet' must be true.",
+        "b": "Incorrect. Modus Tollens is when we have 'p → q' and '¬q', allowing us to conclude '¬p'.",
+        "c": "Incorrect. Hypothetical Syllogism combines two implications: from 'p → q' and 'q → r', we can conclude 'p → r'.",
+        "d": "Incorrect. Disjunctive Syllogism states that from 'p ∨ q' and '¬p', we can conclude 'q'."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the contrapositive of 'If it's sunny, then I'm happy'?",
+      "answers": {
+        "a": "If I'm happy, then it's sunny",
+        "b": "If I'm not happy, then it's not sunny",
+        "c": "If it's not sunny, then I'm not happy",
+        "d": "If I'm not happy, then it's sunny"
+      },
+      "explanations": {
+        "a": "Incorrect. This is the converse of the original statement, not the contrapositive.",
+        "b": "Correct! The contrapositive is formed by negating both parts and reversing their order. If p → q becomes ¬q → ¬p. This is logically equivalent to the original statement.",
+        "c": "Incorrect. This is the inverse of the original statement, formed by negating both parts but keeping the same order.",
+        "d": "Incorrect. This statement has the wrong order and only one negation, making it neither equivalent nor the contrapositive."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In a truth table for p → (q → r), how many rows will have a final value of true?",
+      "answers": {
+        "a": "3",
+        "b": "4",
+        "c": "6",
+        "d": "7"
+      },
+      "explanations": {
+        "a": "Incorrect. There are more cases where the implication is true. Remember, an implication is false only when the antecedent is true and the consequent is false.",
+        "b": "Incorrect. With three variables (p, q, r), there are 8 total rows, and more than 4 will be true.",
+        "c": "Incorrect. While close, this answer is still not correct. Try working out the full truth table considering when implications are false.",
+        "d": "Correct! In a truth table with 3 variables (8 rows), this nested implication will be false only when p is true, q is true, and r is false. This occurs in exactly one row, making 7 rows true."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following is a valid application of the Disjunctive Syllogism rule?",
+      "answers": {
+        "a": "(p ∨ q), (¬p) ⊢ q",
+        "b": "(p ∨ q), (¬p ∨ ¬q) ⊢ p",
+        "c": "(p ∨ q), (p ∨ ¬q) ⊢ p",
+        "d": "(p ∨ q), (¬q ∨ r) ⊢ p"
+      },
+      "explanations": {
+        "a": "Correct! Disjunctive Syllogism states: from (p ∨ q) and ¬p, we can conclude q. By eliminating p, we are left with q as the only valid conclusion.",
+        "b": "Incorrect. This doesn't follow the Disjunctive Syllogism pattern. We cannot conclude p from these premises.",
+        "c": "Incorrect. This doesn't follow the Disjunctive Syllogism pattern. The second premise doesn't eliminate one of the disjuncts.",
+        "d": "Incorrect. The second premise introduces r, which wasn't in the original disjunction, so we cannot apply Disjunctive Syllogism."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "What is the conjunctive normal form (CNF) of p → (q ∨ r)?",
+      "answers": {
+        "a": "(¬p ∨ q ∨ r)",
+        "b": "(p ∧ q) ∨ (p ∧ r)",
+        "c": "(¬p ∧ q) ∨ (¬p ∧ r)",
+        "d": "(¬p ∨ q) ∧ (¬p ∨ r)"
+      },
+      "explanations": {
+        "a": "Correct! To convert p → (q ∨ r) to CNF: First, replace → with ¬p ∨ (q ∨ r), then apply distributive laws. Here, no further transformation is needed as ¬p ∨ q ∨ r is already in CNF.",
+        "b": "Incorrect. This is in disjunctive normal form (DNF), not CNF, and it's not equivalent to the original formula.",
+        "c": "Incorrect. This represents ¬p ∧ (q ∨ r), which is not equivalent to the original formula.",
+        "d": "Incorrect. While this is in CNF, it's not equivalent to the original formula. It represents p → q ∧ p → r."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Which of the following formulas is satisfiable (true in at least one interpretation) but not a tautology (not true in all interpretations)?",
+      "answers": {
+        "a": "p ∨ ¬p",
+        "b": "p ∧ ¬p",
+        "c": "p → p",
+        "d": "p ∧ q"
+      },
+      "explanations": {
+        "a": "Incorrect. This is a tautology (true under all interpretations) - it's true whether p is true or false.",
+        "b": "Incorrect. This is a contradiction - it's false under all interpretations (not satisfiable).",
+        "c": "Incorrect. This is a tautology - it's true under all interpretations.",
+        "d": "Correct! This formula is satisfiable (true when both p and q are true) but not a tautology (false when either p or q is false). A formula that is satisfiable but not a tautology has at least one interpretation where it's true and at least one where it's false."
+      },
+      "correctAnswer": "d",
+      "difficulty": "advanced"
     }
   ]
 }
